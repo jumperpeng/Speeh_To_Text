@@ -1,33 +1,8 @@
 
-// let texts = document.querySelector(".tes");
-
-// const recognition = new webkitSpeechRecognition();
-// recognition.lang = "th-TH";
-// recognition.continuous = true;
-// recognition.interimResults = true;
-
-// let p = document.createElement("p");
-// const element = document.getElementById("demo");
-
-// var word = ["กล้วยหอมการบ้าน"];
-
-// recognition.addEventListener("result", function (event) {
-//     const text = Array.from(event.results)
-//         .map((result) => result[0])
-//         .map((result) => result.transcript)
-//         .join(" ");
-
-//     console.log(text);
-//     p.innerText = text;
-//     texts.appendChild(p);
-// });
-
-// recognition.start();
-
-
 const recognition = new webkitSpeechRecognition();
 var word_result = null
 var state = 1
+var score = 0
 
 //Get word
 var WordData = (function () {
@@ -44,6 +19,8 @@ var WordData = (function () {
     return json;
 })();
 
+
+
 //Get level
 function step_level(){
     
@@ -52,22 +29,31 @@ function step_level(){
             $('#Level').html(value.level)
             $('#word').html(value.word)
         }
+        last_elemet = key
     });
+
+    if(last_elemet == ("level" + state)) $('#start_next').hide();
+        
 
 }
 
 //Check Answer
 function Check_Answer(result){
-
+    
     $.each(WordData, function (key, value) {
         if(key == ("level" + state)){
+            $('#transcription').html = result
             if(value.word === result){
                 $('#status').html("ผ่าน")
+                score = score + 1
+                $('#score').html("Score : " + score)
             }else{
                 $('#status').html("ไม่ผ่าน")
+                $('#score').html("Score : " + score)
             }
         }
     });
+    console.log(score);
 
 }
 
@@ -78,16 +64,25 @@ $('#start_next').click(function(){
     $('#status').html("ผลลัพธ์")
     $('#transcription').html("")
     step_level()
+    $('#start').removeAttr("disabled")
+    $('#start_next').attr('disabled', 'disabled')
 });
+
+$('#score').html("Score : " + score)
 
 //Record Voice
 document.querySelector('#start').addEventListener('click', () => {
     const startBtn = document.querySelector('#start');
+    const startNextBtn = document.querySelector('#start_next');
 
     if (startBtn.innerHTML === "Start") {
         startBtn.innerHTML = "Stop";
     } else {
         startBtn.innerHTML = "Start";
+        startBtn.removeAttribute("enabled", "");
+        startBtn.setAttribute("disabled", "");
+        startNextBtn.removeAttribute("disabled", "");
+        startNextBtn.setAttribute("enabled", "");
     }
     recognition.lang = "th-TH";
     recognition.continuous = true;
