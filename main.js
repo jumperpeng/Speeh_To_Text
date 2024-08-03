@@ -71,7 +71,7 @@ $('#start_next').click(function(){
 $('#score').html("Score : " + score)
 
 //Record Voice
-document.querySelector('#start').addEventListener('click', () => {
+$('#start').click(function(){
     const startBtn = document.querySelector('#start');
     const startNextBtn = document.querySelector('#start_next');
 
